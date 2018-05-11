@@ -1,14 +1,6 @@
-function make2DArray(cols, rows) {
-  let arr = new Array(cols);
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = new Array(rows);
-  }
-  return arr;
-}
 
-let grid;
-let cols;
-let rows;
+
+let grid, cols, rows;
 let resolution = 10;
 
 function setup() {
