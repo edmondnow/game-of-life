@@ -1,0 +1,14 @@
+p {
+  position: fixed;
+  z-index: 2;
+  color: red;
+  font-size: 1.2em;
+}
+
+#canvas-container{
+  width: 1000px;
+  height: 800px;
+  margin: 30px auto;
+  background-color: green;
+
+}

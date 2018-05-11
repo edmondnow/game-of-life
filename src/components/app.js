@@ -1,35 +1,25 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
-class NewCanvas extends Component{
-  constructor(props){
-    super(props);
-  }
 
-  render(){
-    return (<canvas ref="canvas" width="1000" height="1000"></canvas>)
-  }
-  
-}
 
 class GameOfLife extends Component{
   constructor(props){
     super(props);
     this.state = {
-      res: 40,
-      width: 1000,
-      height: 1000,
-      cols: 25,
-      rows:25,
-      grid: []
+      res: 4,
+      width: 1200,
+      height: 600,
+      cols: 200,
+      rows: 200,
+      grid: [],
+      generation: 0
     }
   }
   
 
   make2DArray(){
-    let cols = this.state.width / this.state.res; 
-    let rows = this.state.height / this.state.res;
-    let grid = Array.from(Array(rows), () => new Array(cols));
+    let grid = Array.from(Array(this.state.rows), () => new Array(this.state.cols));
     return grid;
   }
 
@@ -58,9 +48,8 @@ class GameOfLife extends Component{
           let x = i * res;
           let y = j * res;     
           ctx.rect(x, y, res, res);
-          ctx.stroke();
           if(grid[i][j]==1){
-            ctx.fillRect(x,y,res-1,res-1)
+            ctx.fillRect(x, y, res-1, res-1)
           }
           
         }
@@ -88,22 +77,12 @@ class GameOfLife extends Component{
         } 
       }  
     }
-    let check = this.checkArrays(grid, next);
-    if(!check){
-      grid = next;
-      return grid;
-    }
+
+    grid = next;
+    return grid;
   
   }
-  checkArrays(grid, next){
-    for(let i = 0; i<grid.length; i++){
-      if(grid[i]!=next[i]){
-        return false
-      }
-    }
-    return true
-  }
-
+ 
   countNeighbors(grid, x, y){
     let cols = this.state.cols;
     let rows = this.state.rows
@@ -126,22 +105,23 @@ class GameOfLife extends Component{
   componentDidMount() {
     this.draw();
     let grid = this.nextGen();
-    this.setState({grid});
+    this.setState({grid: grid, generation: this.state.generation + 1});
   }
 
   componentDidUpdate(){
     let grid = this.nextGen();
     this.draw();
     setTimeout(()=>{
-      this.setState({grid});
+      this.setState({grid: grid, generation: this.state.generation + 1});
     }, 10)
   }
 
 
   render(){
-    return(
-      <div>
-        <NewCanvas ref="canvas"/>
+    return (
+      <div id='canvas-container'>
+        <p>{`generation:${this.state.generation}` }</p>
+        <canvas ref="canvas" width={this.state.width} height={this.state.height}></canvas>
       </div>
     )
   }
@@ -152,3 +132,19 @@ class GameOfLife extends Component{
 
 export default GameOfLife;
 
+/*
+
+   if (this.state.generation % 20 == 0){
+      return (
+        <div>
+          {`generation:${this.state.generation}`}
+          <canvas ref="canvas" width={this.state.width} height={this.state.height}></canvas>
+        </div>
+        )
+    } else {
+      return (
+        <div>
+          <canvas ref="canvas" width={this.state.width} height={this.state.height}></canvas>
+        </div>
+
+        */
