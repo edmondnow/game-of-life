@@ -3,12 +3,49 @@ p {
   z-index: 2;
   color: red;
   font-size: 1.2em;
+  margin: 0 !important
 }
 
-#canvas-container{
-  width: 1000px;
-  height: 800px;
-  margin: 30px auto;
-  background-color: green;
 
+
+canvas {
+  display: block;
+  margin:  0 auto;
+  background-color: black;
+  margin: 0 !important;
+
+
+
+}
+h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2em;
+  margin: 0 !important;
+  text-align: center;
+} 
+body {
+  margin: 0 !important;
+  overflow-y: hidden;
+}
+
+#accordion {
+  margin: 0 !important;
+  border: none;
+}
+
+.panel-heading, .panel-body, .panel {
+  background-color: black !important;
+  border: none !important;
+  color: white !important;
+}
+
+a {
+  text-decoration: none !important
+}
+
+
+.glyphicon {
+  position: relative;
+  color: white;
+  top: 2px;
 }

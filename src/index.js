@@ -11,4 +11,4 @@ ReactDOM.render(
      <App />
   </div>
 
-  , document.querySelector('.container'));
+  , document.querySelector('.react-container'));
