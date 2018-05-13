@@ -12,10 +12,14 @@ class GameOfLife extends Component{
       height: 0,
       cols: 250,
       rows: 250,
+      pause: false,
       passed: [],
       grid: [],
       generation: 0
     }
+
+    this.handlePause = this.handlePause.bind(this);
+    this.handleClear = this.handleClear.bind(this);
   }
   
 
@@ -33,25 +37,31 @@ class GameOfLife extends Component{
         grid[i][j] = Math.floor(Math.random() * 2);
       }
     }
-    this.setState({grid: grid, passed: grid}) 
+    this.setState({grid: grid, passed: grid});
+    
   }
-
+  
+  clearBoardReturnCtx(){
+    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
+    let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 1000, 1000);
+    return ctx
+  }
 
   draw(){
     let cols = this.state.cols;
     let rows = this.state.rows
     let res = this.state.res;
     let grid = this.state.grid;
-    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
-    let ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 1000, 1000);
+    let passed = this.state.passed;
+    let ctx = this.clearBoardReturnCtx();
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
           let x = i * res;
           let y = j * res;
           if(grid[i][j]==1){
-            let sumPassed = this.countNeighbors(this.state.passed, i, j)
-            if(sumPassed==3&&this.state.passed[i][j]==0){
+            let sumPassed = this.countNeighbors(passed, i, j)
+            if(sumPassed==3&&passed[i][j]==0){
               ctx.fillStyle = this.randomColor();
             } else {
                ctx.fillStyle = "white";
@@ -68,9 +78,19 @@ class GameOfLife extends Component{
     let colors = [ '#FD5B78','#FF6037','#FF9966','#FF9933','#FFCC33','#FFFF66','#FFFF66','#CCFF00','#66FF66','#AAF0D1','#50BFE6','#FF6EFF','#EE34D2','#FF00CC','#FF00CC',]
     return colors[Math.floor(Math.random() * colors.length)] 
   }
-
+  
+  handleClear(e){
+    if(e.target.id=='Clear & Stop'){
+      this.setState({grid: [], passed: [], generation: 0,pause: true});
+      this.clearBoardReturnCtx()
+    } else if (e.target.id=='Fill & Start'){
+      this.makeGrid();
+      this.setState({pause: false});
+    }
+    
+  }
+  
   nextGen(){
-
     let cols = this.state.cols;
     let rows = this.state.rows
     let res = this.state.res;
@@ -100,6 +120,19 @@ class GameOfLife extends Component{
       console.log('resize event')
       this.setState({width: window.innerWidth, height: window.innerHeight});
   }
+
+  handlePause(e){
+    console.log(this.state.pause)
+    console.log(this.state.grid.length)
+    if(!this.state.pause&&this.state.grid.length===0){
+      console.log('click')
+      this.makeGrid();
+    } else if(this.state.pause&&this.state.grid.length!=0){
+      this.setState({pause: false})
+    } else if(!this.state.pause){
+      this.setState({pause: true})
+    }
+  }
  
   countNeighbors(grid, x, y){
     let cols = this.state.cols;
@@ -122,19 +155,26 @@ class GameOfLife extends Component{
 
   }
 
+  shouldComponentUpdate(nextProps, nextState){
+    return (nextState.pause==true ? false : true)
+
+  }
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions());
-    this.draw();
     let next = this.nextGen();
     this.setState({passed: this.state.grid, grid: next, generation: this.state.generation + 1});
   }
 
   componentDidUpdate(){
-    let next = this.nextGen();
+
     this.draw();
-    setTimeout(()=>{
-      this.setState({passed: this.state.grid, grid: next, generation: this.state.generation + 1});
-    }, 10)
+    if(!this.state.pause){
+      let next = this.nextGen();
+    
+      setTimeout(()=>{
+        this.setState({passed: this.state.grid, grid: next, generation: this.state.generation + 1});
+      }, 0)
+    }
   }
   componentWillUnmount() {
   window.removeEventListener('resize', this.updateWindowDimensions);
@@ -143,7 +183,7 @@ class GameOfLife extends Component{
   render(){
     return (
       <div>
-        <Panel gen={this.state.generation}/>
+        <Panel gen={this.state.generation} handlePause={this.handlePause} handleClear={this.handleClear} />
         <canvas ref="canvas" style={{width : this.state.width, height: this.state.height}} 
         width={this.state.width/1.5} height={this.state.height/1.5}></canvas>
       </div>
