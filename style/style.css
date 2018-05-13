@@ -30,9 +30,13 @@ a{
   float: right !important;
   position:absolute;
     right:20px;
-    top:10px;
+    top:7.5px;
 }
 
+.badge {
+  padding: 10px 10px;
+  font-family: monospace;
+}
   
 canvas {
   display: block;

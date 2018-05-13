@@ -57,7 +57,7 @@ class PanelControl extends React.Component {
                 style={this.state.clearbtn=='Fill & Start'?{display: 'none'}: {display:'initial'}}>
                 {this.state.pausebtn}
               </Button>
-              <div id="gen">Generation <Badge>{this.props.gen}</Badge></div>
+              <div id="gen"> <Badge>{this.props.gen} generations</Badge></div>
             </Panel.Title>
           </Panel.Heading>
         </Panel>
