@@ -6,22 +6,46 @@ p {
   margin: 0 !important
 }
 
+a{
+  position: relative;
+  margin-right: 20px;
+}
+.btn {
+  display: inline-block;
+  margin-left: 20px;
+  font-size: 10px !important;
+  position: relative;
+  top: -2.5px;
+  min-width: 100px !important;
+}
 
+.panel-title {
+  align-items: left;
+  display: flex;
 
+}
+
+#gen {
+  display: inline-block;
+  float: right !important;
+  position:absolute;
+    right:20px;
+    top:10px;
+}
+
+  
 canvas {
   display: block;
   margin:  0 auto;
   background-color: black;
   margin: 0 !important;
-
-
-
 }
+
 h1 {
   font-family: 'Cinzel', serif;
   font-size: 1.2em;
   margin: 0 !important;
-  text-align: center;
+  text-align: left;
 } 
 body {
   margin: 0 !important;

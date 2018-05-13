@@ -20,6 +20,8 @@ class GameOfLife extends Component{
 
     this.handlePause = this.handlePause.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.boardClickHandler = this.boardClickHandler.bind(this);
+  
   }
   
 
@@ -68,8 +70,8 @@ class GameOfLife extends Component{
             }
             ctx.rect(x, y, res, res);
             ctx.fillRect(x, y, res-1, res-1)
-          }
-          
+                    }
+
         }
     }
 }
@@ -90,6 +92,33 @@ class GameOfLife extends Component{
     
   }
   
+  boardClickHandler(evt){
+    let res = this.state.res
+    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
+    let rect = canvas.getBoundingClientRect();
+    let ctx = canvas.getContext("2d");
+    let x = ((evt.clientX - rect.left) / (rect.right - rect.left) * (canvas.width));
+    let y = ((evt.clientY - rect.top) / (rect.bottom - rect.top) * (canvas.height));
+    console.log(`x:${Math.round(x/4)} and y:${Math.round(y/4)}`);
+    //ctx.fillStyle = "white";
+    //ctx.rect(x, y, res, res);
+    //ctx.fillRect(x, y, res-1, res-1)
+    let grid = this.state.grid
+    let i = Math.round(x/4);
+    let j = Math.round(y/4);
+    console.log(grid[i][j]);
+    if(grid[i][j]==0){
+      grid[i][j]==1
+    } else {
+      grid[i][j]==0
+    }
+
+    //this.setState({grid})
+    //this.draw()
+  }
+  
+
+
   nextGen(){
     let cols = this.state.cols;
     let rows = this.state.rows
@@ -118,14 +147,12 @@ class GameOfLife extends Component{
 
   updateDimensions() {
       console.log('resize event')
-      this.setState({width: window.innerWidth, height: window.innerHeight});
+      this.setState({width: window.innerWidth, height: window.innerHeight - 44});
   }
 
+
   handlePause(e){
-    console.log(this.state.pause)
-    console.log(this.state.grid.length)
     if(!this.state.pause&&this.state.grid.length===0){
-      console.log('click')
       this.makeGrid();
     } else if(this.state.pause&&this.state.grid.length!=0){
       this.setState({pause: false})
@@ -153,6 +180,7 @@ class GameOfLife extends Component{
     this.updateDimensions()
     this.makeGrid();
 
+
   }
 
   shouldComponentUpdate(nextProps, nextState){
@@ -161,6 +189,8 @@ class GameOfLife extends Component{
   }
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions());
+    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
+    canvas.addEventListener('click', this.boardClickHandler);
     let next = this.nextGen();
     this.setState({passed: this.state.grid, grid: next, generation: this.state.generation + 1});
   }
@@ -185,7 +215,7 @@ class GameOfLife extends Component{
       <div>
         <Panel gen={this.state.generation} handlePause={this.handlePause} handleClear={this.handleClear} />
         <canvas ref="canvas" style={{width : this.state.width, height: this.state.height}} 
-        width={this.state.width/1.5} height={this.state.height/1.5}></canvas>
+        width={this.state.width/1.6} height={this.state.height/1.6}></canvas>
       </div>
     )
   }

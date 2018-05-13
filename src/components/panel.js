@@ -1,4 +1,4 @@
-import { Panel, PanelGroup, Badge, Glyphicon, Button } from 'react-bootstrap';
+import { Panel, PanelGroup, Badge, Button } from 'react-bootstrap';
 import React from 'react';
 
 class PanelControl extends React.Component {
@@ -6,7 +6,6 @@ class PanelControl extends React.Component {
     super(props, context);
 
     this.state = {
-      activeKey: '0',
       pausebtn: 'Pause',
       clearbtn: 'Clear & Stop' 
     };
@@ -44,26 +43,23 @@ class PanelControl extends React.Component {
       <PanelGroup
         accordion
         id="accordion"
-        activeKey={this.state.activeKey}
         onSelect={this.handleSelect}
       >
         <Panel eventKey="1">
           <Panel.Heading>
-            <Panel.Title toggle>
-              <h1>Game of Life <Glyphicon glyph="menu-down"/></h1>
-              
+            <Panel.Title>
+              <a target="_blank" href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"><i class="fab fa-wikipedia-w"></i></a>
+              <h1>Game of Life</h1>
+              <Button className="btn btn-danger" onClick={this.handleClearBtn} id={this.state.clearbtn}>{this.state.clearbtn}</Button>
+              <Button
+                className="btn btn-warning"
+                onClick={this.handlePauseBtn} 
+                style={this.state.clearbtn=='Fill & Start'?{display: 'none'}: {display:'initial'}}>
+                {this.state.pausebtn}
+              </Button>
+              <div id="gen">Generation <Badge>{this.props.gen}</Badge></div>
             </Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>
-            Generation <Badge>{this.props.gen}</Badge>
-            <Button className="btn btn-danger" onClick={this.handleClearBtn} id={this.state.clearbtn}>{this.state.clearbtn}</Button>
-            <Button
-              className="btn btn-warning"
-              onClick={this.handlePauseBtn} 
-              style={this.state.clearbtn=='Fill & Start'?{display: 'none'}: {display:'initial'}}>
-              {this.state.pausebtn}
-            </Button>
-          </Panel.Body>
         </Panel>
       </PanelGroup>
       );
