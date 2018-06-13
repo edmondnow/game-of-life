@@ -29,8 +29,8 @@ a{
   display: inline-block;
   float: right !important;
   position:absolute;
-    right:20px;
-    top:7.5px;
+  right:20px;
+  top:7.5px;
 }
 
 .badge {
@@ -65,6 +65,7 @@ body {
   background-color: black !important;
   border: none !important;
   color: white !important;
+  margin-bottom: 0px !important;
 }
 
 a {

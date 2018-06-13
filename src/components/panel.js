@@ -10,13 +10,8 @@ class PanelControl extends React.Component {
       clearbtn: 'Clear & Stop' 
     };
 
-    this.handleSelect = this.handleSelect.bind(this);
     this.handlePauseBtn = this.handlePauseBtn.bind(this);
     this.handleClearBtn = this.handleClearBtn.bind(this);
-  }
-
-  handleSelect(activeKey) {
-    this.setState({ activeKey });
   }
 
   handlePauseBtn(){
@@ -39,29 +34,24 @@ class PanelControl extends React.Component {
     }
   }
   render() {
+    const { clearbtn, pausebtn} = this.state;
     return (
-      <PanelGroup
-        accordion
-        id="accordion"
-        onSelect={this.handleSelect}
-      >
-        <Panel eventKey="1">
-          <Panel.Heading>
-            <Panel.Title>
-              <a target="_blank" href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"><i class="fab fa-wikipedia-w"></i></a>
-              <h1>Game of Life</h1>
-              <Button className="btn btn-danger" onClick={this.handleClearBtn} id={this.state.clearbtn}>{this.state.clearbtn}</Button>
-              <Button
-                className="btn btn-warning"
-                onClick={this.handlePauseBtn} 
-                style={this.state.clearbtn=='Fill & Start'?{display: 'none'}: {display:'initial'}}>
-                {this.state.pausebtn}
-              </Button>
-              <div id="gen"> <Badge>{this.props.gen} generations</Badge></div>
-            </Panel.Title>
-          </Panel.Heading>
-        </Panel>
-      </PanelGroup>
+      <Panel>
+        <Panel.Heading>
+          <Panel.Title>
+            <a target="_blank" href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"><i className="fab fa-wikipedia-w"></i></a>
+            <h1>Game of Life</h1>
+            <Button className="btn btn-danger" onClick={this.handleClearBtn} id={clearbtn}>{clearbtn}</Button>
+            <Button
+              className="btn btn-warning"
+              onClick={this.handlePauseBtn} 
+              style={clearbtn=='Fill & Start'?{display: 'none'}: {display:'initial'}}>
+              {pausebtn}
+            </Button>
+            <div id="gen"> <Badge>{this.props.gen} generations</Badge></div>
+          </Panel.Title>
+        </Panel.Heading>
+      </Panel>
       );
   }
 }

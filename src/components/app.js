@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import Panel from './panel';
 
-
 class GameOfLife extends Component{
   constructor(props){
     super(props);
@@ -17,22 +16,17 @@ class GameOfLife extends Component{
       grid: [],
       generation: 0
     }
-
     this.handlePause = this.handlePause.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.boardClickHandler = this.boardClickHandler.bind(this);
-  
   }
-  
 
   make2DArray(){
     let grid = Array.from(Array(this.state.rows), () => new Array(this.state.cols));
     return grid;
   }
 
-
   makeGrid(){
-    
     let grid = this.make2DArray();
     for (let i = 0; i < this.state.cols; i++) {
       for (let j = 0; j < this.state.rows; j++) {
@@ -44,18 +38,13 @@ class GameOfLife extends Component{
   }
   
   clearBoardReturnCtx(){
-    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
-    let ctx = canvas.getContext("2d");
+    let ctx = ReactDOM.findDOMNode(this.refs.canvas).getContext('2d')
     ctx.clearRect(0, 0, 1000, 1000);
     return ctx
   }
 
   draw(){
-    let cols = this.state.cols;
-    let rows = this.state.rows
-    let res = this.state.res;
-    let grid = this.state.grid;
-    let passed = this.state.passed;
+    const { cols, rows, res, grid, passed } = this.state;
     let ctx = this.clearBoardReturnCtx();
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
@@ -71,7 +60,6 @@ class GameOfLife extends Component{
             ctx.rect(x, y, res, res);
             ctx.fillRect(x, y, res-1, res-1)
                     }
-
         }
     }
 }
@@ -93,17 +81,23 @@ class GameOfLife extends Component{
   }
   
   boardClickHandler(evt){
-    let res = this.state.res
-    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
-    let rect = canvas.getBoundingClientRect();
+    const res = this.state.res
+    const canvas = ReactDOM.findDOMNode(this.refs.canvas)
+    const rect = canvas.getBoundingClientRect();
     let ctx = canvas.getContext("2d");
+    // GET THE DATA OF PIXEL POSITION ON AN XY PLAIN OF PIXELS
+    //web dev issue-> how to get canvas position: 
     let x = ((evt.clientX - rect.left) / (rect.right - rect.left) * (canvas.width));
     let y = ((evt.clientY - rect.top) / (rect.bottom - rect.top) * (canvas.height));
     console.log(`x:${Math.round(x/4)} and y:${Math.round(y/4)}`);
+ 
     //ctx.fillStyle = "white";
     //ctx.rect(x, y, res, res);
     //ctx.fillRect(x, y, res-1, res-1)
+    //What is the math behind converting pixel data to the aproximate position of the grid? Write below!
+    //round 
     let grid = this.state.grid
+    console.log(this.state.grid)
     let i = Math.round(x/4);
     let j = Math.round(y/4);
     console.log(grid[i][j]);
@@ -120,10 +114,7 @@ class GameOfLife extends Component{
 
 
   nextGen(){
-    let cols = this.state.cols;
-    let rows = this.state.rows
-    let res = this.state.res;
-    let grid = this.state.grid;
+    let {cols, rows, res, grid } = this.state
     let next = this.make2DArray();
     for (let i = 0; i < cols; i++) {
       for (let j = 0; j < rows; j++) {
@@ -139,31 +130,29 @@ class GameOfLife extends Component{
         } 
       }  
     }
-  
     grid = next;
     return grid;
-  
   }
 
+//Must make sure that resize occurs on window resize (check later)
   updateDimensions() {
       console.log('resize event')
       this.setState({width: window.innerWidth, height: window.innerHeight - 44});
   }
 
-
   handlePause(e){
-    if(!this.state.pause&&this.state.grid.length===0){
+    const {pause, grid } = this.state;
+    if(!pause&&grid.length===0){
       this.makeGrid();
-    } else if(this.state.pause&&this.state.grid.length!=0){
+    } else if(pause&&grid.length!=0){
       this.setState({pause: false})
-    } else if(!this.state.pause){
+    } else if(!pause){
       this.setState({pause: true})
     }
   }
  
   countNeighbors(grid, x, y){
-    let cols = this.state.cols;
-    let rows = this.state.rows
+    const {cols, rows} = this.state;
     let sum = 0;
     for(let i = -1; i < 2; i++){
       for( let j = -1; j <2; j++){
@@ -172,56 +161,57 @@ class GameOfLife extends Component{
         sum+= grid[col][row];
       }
     }
-    sum-= grid[x][y]
-    return sum
+    sum -= grid[x][y];
+    return sum;
   }
 
   componentWillMount(){
-    this.updateDimensions()
+    this.updateDimensions();
     this.makeGrid();
-
-
   }
 
   shouldComponentUpdate(nextProps, nextState){
-    return (nextState.pause==true ? false : true)
-
+    return (nextState.pause==true ? false : true);
   }
+
   componentDidMount() {
+    const { grid, generation } = this.state;
     window.addEventListener("resize", this.updateDimensions());
-    let canvas = ReactDOM.findDOMNode(this.refs.canvas)
+    let canvas = ReactDOM.findDOMNode(this.refs.canvas);
     canvas.addEventListener('click', this.boardClickHandler);
     let next = this.nextGen();
-    this.setState({passed: this.state.grid, grid: next, generation: this.state.generation + 1});
+    this.setState({ passed:grid, grid:next, generation:generation + 1 });
   }
 
   componentDidUpdate(){
-
+    const { grid, generation, pause } = this.state;
     this.draw();
-    if(!this.state.pause){
+    if(!pause){
       let next = this.nextGen();
-    
       setTimeout(()=>{
-        this.setState({passed: this.state.grid, grid: next, generation: this.state.generation + 1});
+        this.setState({ passed:grid, grid: next, generation:generation + 1 });
       }, 0)
     }
   }
+
   componentWillUnmount() {
-  window.removeEventListener('resize', this.updateWindowDimensions);
-}
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
 
   render(){
+    const {width, height, generation} = this.state;
     return (
       <div>
-        <Panel gen={this.state.generation} handlePause={this.handlePause} handleClear={this.handleClear} />
-        <canvas ref="canvas" style={{width : this.state.width, height: this.state.height}} 
-        width={this.state.width/1.6} height={this.state.height/1.6}></canvas>
+        <Panel gen={ generation } handlePause={ this.handlePause } handleClear={this.handleClear} />
+        <canvas 
+          ref="canvas" 
+          style={{ width : width, height:height }} 
+          width={ width/1.6 } height={ height/1.6 }>
+        </canvas>
       </div>
     )
   }
 }
-
-
 
 
 export default GameOfLife;
