@@ -48,6 +48,7 @@ class PanelControl extends React.Component {
               style={clearbtn=='Fill & Start'?{display: 'none'}: {display:'initial'}}>
               {pausebtn}
             </Button>
+            <div id="ins"> Pause the game to draw on the board! </div>
             <div id="gen"> <Badge>{this.props.gen} generations</Badge></div>
           </Panel.Title>
         </Panel.Heading>

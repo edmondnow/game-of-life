@@ -33,36 +33,53 @@ class GameOfLife extends Component{
         grid[i][j] = Math.floor(Math.random() * 2);
       }
     }
-    this.setState({grid: grid, passed: grid});
+    this.setState({ grid: grid, passed: grid });
     
   }
   
   clearBoardReturnCtx(){
     let ctx = ReactDOM.findDOMNode(this.refs.canvas).getContext('2d')
     ctx.clearRect(0, 0, 1000, 1000);
-    return ctx
+    return ctx;
   }
 
   draw(){
     const { cols, rows, res, grid, passed } = this.state;
     let ctx = this.clearBoardReturnCtx();
     for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-          let x = i * res;
-          let y = j * res;
-          if(grid[i][j]==1){
-            let sumPassed = this.countNeighbors(passed, i, j)
-            if(sumPassed==3&&passed[i][j]==0){
-              ctx.fillStyle = this.randomColor();
-            } else {
-               ctx.fillStyle = "white";
-            }
-            ctx.rect(x, y, res, res);
-            ctx.fillRect(x, y, res-1, res-1)
-                    }
-        }
+      for (let j = 0; j < rows; j++) {
+        let x = j * res;
+        let y = i * res;
+        if(grid[i][j]==1){
+          let sumPassed = this.countNeighbors(passed, i, j)
+          if(sumPassed==3&&passed[i][j]==0){
+            ctx.fillStyle = this.randomColor();
+          } else {
+             ctx.fillStyle = "white";
+          }
+          ctx.rect(x, y, res, res);
+          ctx.fillRect(x, y, res-1, res-1)
+          }
+      }
     }
-}
+  }
+
+  drawCurrent(y, x, cell){
+    const { res } = this.state;
+    const canvas = ReactDOM.findDOMNode(this.refs.canvas)
+    let ctx = canvas.getContext("2d");
+    x = x * res;
+    y = y * res;
+    if(cell==1){
+        ctx.fillStyle = this.randomColor();
+      } else {
+         ctx.fillStyle = "white";
+    }
+    ctx.rect(x, y, res, res);
+    ctx.fillRect(x, y, res-1, res-1)
+  }
+
+  
 
   randomColor(){
     let colors = [ '#FD5B78','#FF6037','#FF9966','#FF9933','#FFCC33','#FFFF66','#FFFF66','#CCFF00','#66FF66','#AAF0D1','#50BFE6','#FF6EFF','#EE34D2','#FF00CC','#FF00CC',]
@@ -81,34 +98,27 @@ class GameOfLife extends Component{
   }
   
   boardClickHandler(evt){
-    const res = this.state.res
-    const canvas = ReactDOM.findDOMNode(this.refs.canvas)
-    const rect = canvas.getBoundingClientRect();
-    let ctx = canvas.getContext("2d");
-    // GET THE DATA OF PIXEL POSITION ON AN XY PLAIN OF PIXELS
-    //web dev issue-> how to get canvas position: 
-    let x = ((evt.clientX - rect.left) / (rect.right - rect.left) * (canvas.width));
-    let y = ((evt.clientY - rect.top) / (rect.bottom - rect.top) * (canvas.height));
-    console.log(`x:${Math.round(x/4)} and y:${Math.round(y/4)}`);
- 
-    //ctx.fillStyle = "white";
-    //ctx.rect(x, y, res, res);
-    //ctx.fillRect(x, y, res-1, res-1)
-    //What is the math behind converting pixel data to the aproximate position of the grid? Write below!
-    //round 
-    let grid = this.state.grid
-    console.log(this.state.grid)
-    let i = Math.round(x/4);
-    let j = Math.round(y/4);
-    console.log(grid[i][j]);
-    if(grid[i][j]==0){
-      grid[i][j]==1
-    } else {
-      grid[i][j]==0
+    if(this.state.pause){
+      const { res, cols, rows } = this.state;
+      let grid = this.state.grid;
+      const canvas = ReactDOM.findDOMNode(this.refs.canvas)
+      const rect = canvas.getBoundingClientRect();
+      let ctx = canvas.getContext("2d");
+      //Coordinates on canvas rounded to nearest 
+      let x = ((Math.round(evt.clientX) - Math.round(rect.left)) / (Math.round(rect.right) - Math.round(rect.left)) * (canvas.width));
+      let y = ((Math.round(evt.clientY) - Math.round(rect.top)) / (Math.round(rect.bottom) - Math.round(rect.top)) * (canvas.height));
+      x = Math.round(x / res);
+      y = Math.round(y / res);
+      if(y<cols&&x<rows){
+        if(grid[y][x] == 0 ){
+          grid[y][x] = 1;
+        } else {
+          grid[y][x] = 0;
+        };
+        this.setState({grid})
+        this.drawCurrent(y, x, grid[y][x]);
+      }
     }
-
-    //this.setState({grid})
-    //this.draw()
   }
   
 

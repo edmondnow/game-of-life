@@ -78,3 +78,8 @@ a {
   color: white;
   top: 5px;
 }
+
+#ins {
+  margin: 0 auto;
+  font-family: monospace;
+}
